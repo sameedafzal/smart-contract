@@ -13,7 +13,7 @@ module.exports = async function ({ deployments, getNamedAccounts }) {
 
     await deploy("ExampleUniversalONFT721", {
         from: deployer,
-        args: [1000,lzEndpointAddress,onftArgs.startMintId, onftArgs.endMintId],
+        args: [40000,lzEndpointAddress,onftArgs.startMintId, onftArgs.endMintId],
         log: true,
         waitConfirmations: 1,
     })

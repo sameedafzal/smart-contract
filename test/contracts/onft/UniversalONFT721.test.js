@@ -40,7 +40,8 @@ describe("UniversalONFT721: ", function () {
         await ONFTSrc.setDstChainIdToBatchLimit(chainIdDst, batchSizeLimit)
         await ONFTDst.setDstChainIdToBatchLimit(chainIdSrc, batchSizeLimit)
 
-        //set destination min gas
+        //set destination min 
+        print(parseInt(await ONFTSrc.FUNCTION_TYPE_SEND()));
         await ONFTSrc.setMinDstGas(chainIdDst, parseInt(await ONFTSrc.FUNCTION_TYPE_SEND()), 225000)
     })
 

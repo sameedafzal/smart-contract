@@ -95,6 +95,12 @@ npx hardhat --network fuji onftMint --contract ExampleUniversalONFT721
 npx hardhat --network bsc-testnet ownerOf --token-id 1 --contract ExampleUniversalONFT721
 npx hardhat --network fuji ownerOf --token-id 11 --contract ExampleUniversalONFT721
 ```
+
+4.a [Required] set minGasFee
+```
+npm hardhat --network goerli setMinDestFee --contract contractAddress
+```
+
 5. Send ONFT across chains
 ```angular2html
 npx hardhat --network bsc-testnet onftSend --target-network fuji --token-id 1 --contract ExampleUniversalONFT721

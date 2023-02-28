@@ -94,6 +94,9 @@ task("checkWireUp", "check wire up", require("./checkWireUp"))
     .addParam("e", "environment testnet/mainet")
     .addParam("contract", "the contract to delete and redeploy")
 
+task("setMinDestFee", "set min destination fee", require('./setMinDestFee'))
+.addParam("contract", "name of contract")
+
 //
 task("checkWireUpAll", "check wire up all", require("./checkWireUpAll"))
     .addParam("e", "environment testnet/mainet")

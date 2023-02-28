@@ -28,11 +28,11 @@ module.exports = async function (taskArgs, hre) {
     const localContractInstance = await ethers.getContract(localContract)
 
     // quote fee with default adapterParams
-    let adapterParams = ethers.utils.solidityPack(["uint16", "uint256"], [1, 200000]) // default adapterParams example
+    let adapterParams = ethers.utils.solidityPack(["uint16", "uint256"], [1, 80000]) // default adapterParams example
 
     let fees = await localContractInstance.estimateSendFee(remoteChainId, toAddress, tokenId, false, adapterParams)
     console.log(`fees[0] (wei): ${fees[0]} / (eth): ${ethers.utils.formatEther(fees[0])}`)
-    adapterParams = ethers.utils.solidityPack(["uint16", "uint256"], [1, fees[0]]);
+    // adapterParams = ethers.utils.solidityPack(["uint16", "uint256"], [1, ethers.utils.parseEther("0.2")]);
 
     try {
         let tx = await (
@@ -43,20 +43,21 @@ module.exports = async function (taskArgs, hre) {
                 tokenId,                        // tokenId to send
                 owner.address,                  // refund address (if too much message fee is sent, it gets refunded)
                 ethers.constants.AddressZero,   // address(0x0) if not paying in ZRO (LayerZero Token)
-                adapterParams                   // flexible bytes array to indicate messaging adapter services
+                adapterParams,
+                {value: ethers.utils.parseEther("0.1") }                 // flexible bytes array to indicate messaging adapter services
                 
             )
         ).wait()
         console.log(`✅ [${hre.network.name}] send(${remoteChainId}, ${tokenId})`)
         console.log(` tx: ${tx.transactionHash}`)
     } catch (e) {
-        if (e.error?.message.includes("Message sender must own the OmnichainNFT.")) {
-            console.log("*Message sender must own the OmnichainNFT.*")
-        } else if (e.error.message.includes("This chain is not a trusted source source.")) {
-            console.log("*This chain is not a trusted source source.*")
-        } else {
+        // if (e.error?.message.includes("Message sender must own the OmnichainNFT.")) {
+        //     console.log("*Message sender must own the OmnichainNFT.*")
+        // } else if (e.error.message.includes("This chain is not a trusted source source.")) {
+        //     console.log("*This chain is not a trusted source source.*")
+        // } else {
             console.log(e)
-        }
+        // }
     }
 }
 
