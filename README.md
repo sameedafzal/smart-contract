@@ -96,9 +96,10 @@ npx hardhat --network bsc-testnet ownerOf --token-id 1 --contract ExampleUnivers
 npx hardhat --network fuji ownerOf --token-id 11 --contract ExampleUniversalONFT721
 ```
 
-4.a [Required] set minGasFee
+4.a [Required] set minGasFee for both chains
 ```
-npm hardhat --network goerli setMinDestFee --contract contractAddress
+npx hardhat --network goerli setMinDestFee --contract ExampleUniversalONFT721
+npx hardhat --network mumbai setMinDestFee --contract ExampleUniversalONFT721
 ```
 
 5. Send ONFT across chains
