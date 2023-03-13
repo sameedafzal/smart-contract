@@ -1,7 +1,8 @@
 const { ethers } = require("ethers");
 
-let goerli = '0x98Fc7D95BB5D7FBacb4C3C43cCc468c784EfCeA6';
-let mumbai = '0xd249940F911f44260B5F118B3D3526e5D96f6803';
+let goerli = '0x9EE37a653De40Fb31f9148b1f2E7129A9A438889';
+let mumbai = '0x2863A7cb0B6c4f8a4CD6246CcA7254fb8783d5c5';
+
 
 let x = ethers.utils.solidityPack(
     ['address', 'address'],
@@ -13,10 +14,14 @@ let y = ethers.utils.solidityPack(
     [mumbai,goerli]
 )
 
-let z = ethers.utils.solidityPack(["uint16", "uint256"], [1, 1171384621311]);
-console.log(ethers.utils.formatEther(1927222673898) + ' ethers');
 
-console.log(x);
-console.log(y);
-console.log(z);
-console.log()
+console.log('setRemoteMumbai: ' + x);
+console.log('setRemoteGoerli: ' + y);
+
+
+// add value from estimateFee Function
+let estimate = 80000;
+let z = ethers.utils.solidityPack(["uint16", "uint256"], [1, estimate]);
+
+console.log('adapterParams: ' + z);
+console.log('estimateFee: ' + ethers.utils.formatEther(estimate) + ' ethers');

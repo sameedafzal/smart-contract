@@ -9,10 +9,10 @@
   },
   "goerli": {
     "startMintId": 1,
-    "endMintId": 1000
+    "endMintId": 1000000
   },
   "mumbai":{
-    "startMintId": 1001,
-    "endMintId": 1000
+    "startMintId": 1000001,
+    "endMintId": 1000000
   }
 }

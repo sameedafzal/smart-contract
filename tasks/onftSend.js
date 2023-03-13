@@ -44,8 +44,7 @@ module.exports = async function (taskArgs, hre) {
                 owner.address,                  // refund address (if too much message fee is sent, it gets refunded)
                 ethers.constants.AddressZero,   // address(0x0) if not paying in ZRO (LayerZero Token)
                 adapterParams,
-                {value: ethers.utils.parseEther("0.1") }                 // flexible bytes array to indicate messaging adapter services
-                
+                {value: ethers.utils.parseEther("0.06") }                 // flexible bytes array to indicate messaging adapter services
             )
         ).wait()
         console.log(`✅ [${hre.network.name}] send(${remoteChainId}, ${tokenId})`)

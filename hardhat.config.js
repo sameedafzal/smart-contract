@@ -60,7 +60,7 @@ module.exports = {
         }
       },
       {
-        version: "0.8.12",
+        version: "0.8.17",
         settings: {
           optimizer: {
             enabled: true,
@@ -142,7 +142,7 @@ module.exports = {
       accounts: accounts(),
     },
     mumbai: {
-      url: "https://rpc-mumbai.maticvigil.com/",
+      url: "https://matic-mumbai.chainstacklabs.com/",
       chainId: 80001,
       accounts: accounts(),
     },
@@ -161,5 +161,17 @@ module.exports = {
       chainId: 4002,
       accounts: accounts(),
     }
+  },
+
+  etherscan: {
+    // apiKey: {
+    //   bscTestnet: 
+    //   'QNC9YFSXGT7GW8J357RQN7KRNTZIUG8F54',
+    //   goerli: '37TG5M9JQUGU7AP48216TE6V28B6KNDSJG',
+    //   mumbai : '7ZGY8QXJD4MTPUYNMYHVTX3TV9T3B8C5TA'
+    // }, // bsc-test
+    apiKey: '7ZGY8QXJD4MTPUYNMYHVTX3TV9T3B8C5TA', //mumbai
+    // apiKey: '37TG5M9JQUGU7AP48216TE6V28B6KNDSJG', //eth
+    customChains: []
   }
 };
