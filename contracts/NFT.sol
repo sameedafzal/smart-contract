@@ -7,19 +7,19 @@ import "operator-filter-registry/src/DefaultOperatorFilterer.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
 import "@openzeppelin/contracts/token/common/ERC2981.sol";
 import "@openzeppelin/contracts/utils/cryptography/MerkleProof.sol";
-import "./ERC4907A.sol";
 import "./ONFT721ACore.sol";
 
 interface OpenSea {
     function proxies(address) external view returns (address);
 }
 
-abstract contract Sample is
+abstract contract Template is
     ERC2981,
-    ERC4907A,
+    ERC721A("Sample", "NTO"),
     Ownable,
     DefaultOperatorFilterer,
     ONFT721ACore
+    
 {
     bool public revealed = false;
     string public notRevealedMetadataFolderIpfsLink;
@@ -31,9 +31,11 @@ abstract contract Sample is
     uint256 constant presaleSupply = 300;
     string constant baseExtension = ".json";
     uint256 public publicmintActiveTime = 0;
+    bool internal mintingAllowed;
 
-    constructor() ERC4907A("Sample", "NTO") {
+    constructor(bool _mintingAllowed) {
         _setDefaultRoyalty(msg.sender, 500); // 5.00 %
+        mintingAllowed = _mintingAllowed;
     }
 
     function _debitFrom(address _from, uint16, bytes memory, uint _tokenId) internal virtual override {
@@ -53,6 +55,7 @@ abstract contract Sample is
 
     // public
     function purchaseTokens(uint256 _mintAmount) public payable {
+        require(mintingAllowed, "Minting not allowed on this contract");
         require(
             block.timestamp > publicmintActiveTime,
             "the contract is paused"
@@ -80,20 +83,16 @@ abstract contract Sample is
         public
         view
         virtual
-        override(ERC4907A, ERC2981, ONFT721ACore)
+        override(ERC721A, ERC2981, ONFT721ACore)
         returns (bool)
     {
-        return ERC4907A.supportsInterface(interfaceId) || ERC2981.supportsInterface(interfaceId) || ONFT721ACore.supportsInterface(interfaceId);
+        return ERC721A.supportsInterface(interfaceId) || ERC2981.supportsInterface(interfaceId) || ONFT721ACore.supportsInterface(interfaceId);
     }
 
     function _startTokenId() internal pure override returns (uint256) {
         return 1;
     }
-
-    function _baseURI() internal view virtual override returns (string memory) {
-        return metadataFolderIpfsLink;
-    }
-
+    
     function tokenURI(uint256 tokenId)
         public
         view
@@ -121,6 +120,10 @@ abstract contract Sample is
                 : "";
     }
 
+    function _baseURI() internal view virtual override returns (string memory) {
+        return metadataFolderIpfsLink;
+    }
+
     //////////////////
     //  ONLY OWNER  //
     //////////////////
@@ -136,6 +139,7 @@ abstract contract Sample is
         external
         onlyOwner
     {
+        require(mintingAllowed, "Minting not allowed on this contract");
         nftsForOwner -= _sendNftsTo.length * _howMany;
 
         for (uint256 i = 0; i < _sendNftsTo.length; i++)
@@ -181,16 +185,23 @@ abstract contract Sample is
     function setSaleActiveTime(uint256 _publicmintActiveTime) public onlyOwner {
         publicmintActiveTime = _publicmintActiveTime;
     }
+
+    function _isApprovedOrOwner(address spender, uint256 tokenId) internal view virtual returns (bool) {
+        address owner = ERC721A.ownerOf(tokenId);
+        return (spender == owner || isApprovedForAll(owner, spender) || getApproved(tokenId) == spender);
+    }
+
+    
 }
 
-contract NftWhitelistSaleMerkle is Sample {
-    // multiple presale configs
+contract ONFTContract is Template {
+
     mapping(uint256 => uint256) public maxMintPresales;
     mapping(uint256 => uint256) public itemPricePresales;
     mapping(uint256 => bytes32) public whitelistMerkleRoots;
     uint256 public presaleActiveTime = type(uint256).max;
 
-    constructor(uint256 _minGasToTransfer, address _lzEndpoint) ONFT721ACore(_minGasToTransfer, _lzEndpoint){}
+    constructor(uint256 _minGasToTransfer, address _lzEndpoint, bool _mintingAllowed) ONFT721ACore(_minGasToTransfer, _lzEndpoint) Template(_mintingAllowed){}
 
     function _inWhitelist(
         address _owner,
@@ -210,6 +221,7 @@ contract NftWhitelistSaleMerkle is Sample {
         bytes32[] calldata _proof,
         uint256 _rootNumber
     ) external payable {
+        require(mintingAllowed, "Minting not allowed on this contract");
         require(block.timestamp > presaleActiveTime, "Presale is not active");
         require(
             _inWhitelist(msg.sender, _proof, _rootNumber),
@@ -228,6 +240,24 @@ contract NftWhitelistSaleMerkle is Sample {
         _safeMint(msg.sender, _howMany);
     }
 
+    function safeTransferFrom(
+        address from,
+        address to,
+        uint256 tokenId,
+        bytes memory data
+    ) public payable virtual override onlyAllowedOperator(from) {
+        super.safeTransferFrom(from, to, tokenId, data);
+    }
+
+    
+
+    function setPresaleActiveTime(uint256 _presaleActiveTime)
+        external
+        onlyOwner
+    {
+        presaleActiveTime = _presaleActiveTime;
+    }
+
     function setPresale(
         uint256 _rootNumber,
         bytes32 _whitelistMerkleRoot,
@@ -237,13 +267,6 @@ contract NftWhitelistSaleMerkle is Sample {
         maxMintPresales[_rootNumber] = _maxMintPresales;
         itemPricePresales[_rootNumber] = _itemPricePresale;
         whitelistMerkleRoots[_rootNumber] = _whitelistMerkleRoot;
-    }
-
-    function setPresaleActiveTime(uint256 _presaleActiveTime)
-        external
-        onlyOwner
-    {
-        presaleActiveTime = _presaleActiveTime;
     }
 
     // implementing Operator Filter Registry
@@ -259,15 +282,7 @@ contract NftWhitelistSaleMerkle is Sample {
         super.setApprovalForAll(operator, approved);
     }
 
-    function approve(address operator, uint256 tokenId)
-        public
-        payable
-        virtual
-        override
-        onlyAllowedOperatorApproval(operator)
-    {
-        super.approve(operator, tokenId);
-    }
+    
 
     function transferFrom(
         address from,
@@ -285,12 +300,13 @@ contract NftWhitelistSaleMerkle is Sample {
         super.safeTransferFrom(from, to, tokenId);
     }
 
-    function safeTransferFrom(
-        address from,
-        address to,
-        uint256 tokenId,
-        bytes memory data
-    ) public payable virtual override onlyAllowedOperator(from) {
-        super.safeTransferFrom(from, to, tokenId, data);
+    function approve(address operator, uint256 tokenId)
+        public
+        payable
+        virtual
+        override
+        onlyAllowedOperatorApproval(operator)
+    {
+        super.approve(operator, tokenId);
     }
 }

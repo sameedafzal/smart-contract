@@ -1,8 +1,8 @@
 const { ethers } = require("hardhat");
 
 async function main() {
-  const Lock = await ethers.getContractFactory("NftWhitelistSaleMerkle");
-  const lock = await Lock.deploy(40000, "0xf69186dfBa60DdB133E91E9A4B5673624293d8F8");
+  const Lock = await ethers.getContractFactory("ONFTContract");
+  const lock = await Lock.deploy(40000,"0xf69186dfBa60DdB133E91E9A4B5673624293d8F8",false);
 
   await lock.deployed();
 

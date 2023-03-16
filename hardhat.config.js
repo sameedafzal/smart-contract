@@ -142,7 +142,7 @@ module.exports = {
       accounts: accounts(),
     },
     mumbai: {
-      url: "https://matic-mumbai.chainstacklabs.com/",
+      url: "https://polygon-mumbai.g.alchemy.com/v2/OB6aS9T1f7E8zNIkeFN2ssxJ2Ok2h-Uw",
       chainId: 80001,
       accounts: accounts(),
     },
@@ -168,7 +168,7 @@ module.exports = {
     //   bscTestnet: 
     //   'QNC9YFSXGT7GW8J357RQN7KRNTZIUG8F54',
     //   goerli: '37TG5M9JQUGU7AP48216TE6V28B6KNDSJG',
-    //   mumbai : '7ZGY8QXJD4MTPUYNMYHVTX3TV9T3B8C5TA'
+    //   // mumbai : '7ZGY8QXJD4MTPUYNMYHVTX3TV9T3B8C5TA'
     // }, // bsc-test
     apiKey: '7ZGY8QXJD4MTPUYNMYHVTX3TV9T3B8C5TA', //mumbai
     // apiKey: '37TG5M9JQUGU7AP48216TE6V28B6KNDSJG', //eth

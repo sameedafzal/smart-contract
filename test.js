@@ -20,7 +20,7 @@ console.log('setRemoteGoerli: ' + y);
 
 
 // add value from estimateFee Function
-let estimate = 80000;
+let estimate = 747747698479;
 let z = ethers.utils.solidityPack(["uint16", "uint256"], [1, estimate]);
 
 console.log('adapterParams: ' + z);
