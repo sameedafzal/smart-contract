@@ -8,6 +8,7 @@ import "@openzeppelin/contracts/access/Ownable.sol";
 import "@openzeppelin/contracts/token/common/ERC2981.sol";
 import "@openzeppelin/contracts/utils/cryptography/MerkleProof.sol";
 import "./ONFT721ACore.sol";
+import "./ERC4907A.sol";
 
 interface OpenSea {
     function proxies(address) external view returns (address);
@@ -15,7 +16,7 @@ interface OpenSea {
 
 abstract contract Template is
     ERC2981,
-    ERC721A("Sample", "NTO"),
+    ERC4907A("Sample", "NTO"),
     Ownable,
     DefaultOperatorFilterer,
     ONFT721ACore
@@ -83,7 +84,7 @@ abstract contract Template is
         public
         view
         virtual
-        override(ERC721A, ERC2981, ONFT721ACore)
+        override(ERC4907A, ERC2981, ONFT721ACore)
         returns (bool)
     {
         return ERC721A.supportsInterface(interfaceId) || ERC2981.supportsInterface(interfaceId) || ONFT721ACore.supportsInterface(interfaceId);
@@ -185,12 +186,6 @@ abstract contract Template is
     function setSaleActiveTime(uint256 _publicmintActiveTime) public onlyOwner {
         publicmintActiveTime = _publicmintActiveTime;
     }
-
-    function _isApprovedOrOwner(address spender, uint256 tokenId) internal view virtual returns (bool) {
-        address owner = ERC721A.ownerOf(tokenId);
-        return (spender == owner || isApprovedForAll(owner, spender) || getApproved(tokenId) == spender);
-    }
-
     
 }
 
