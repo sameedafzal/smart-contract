@@ -14,9 +14,9 @@ interface OpenSea {
     function proxies(address) external view returns (address);
 }
 
-abstract contract Template is
+abstract contract CyberSyndicate is
     ERC2981,
-    ERC4907A("Sample", "NTO"),
+    ERC4907A("CyberSyndicate", "CS"),
     Ownable,
     DefaultOperatorFilterer,
     ONFT721ACore
@@ -189,7 +189,7 @@ abstract contract Template is
     
 }
 
-contract ONFTContract is Template {
+contract CSContract is CyberSyndicate {
 
     mapping(uint256 => uint256) public maxMintPresales;
     mapping(uint256 => uint256) public itemPricePresales;
